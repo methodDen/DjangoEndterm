@@ -11,8 +11,8 @@ from django.urls import path
 
 router = routers.SimpleRouter()
 router.register('players', PlayerViewSet, basename='players')
-router.register('team_stats', TeamStatisticsViewSet, basename='team_stats')
-router.register('player_stats', PlayerStatisticsViewSet, basename='player_stats')
+router.register('team-stats', TeamStatisticsViewSet, basename='team_stats')
+router.register('player-stats', PlayerStatisticsViewSet, basename='player_stats')
 router.register('stadiums', StadiumViewSet, basename='stadiums')
 router.register('football_clubs', FootballClubViewSet, basename='football_clubs')
 router.register('matches', MatchViewSet, basename='matches')

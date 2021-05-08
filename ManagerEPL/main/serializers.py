@@ -112,7 +112,8 @@ class FootballClubRepresentationSerializer(FootballClubSimpleSerializer):
 
 class FootballClubFullSerializer(FootballClubRepresentationSerializer):
     class Meta(FootballClubRepresentationSerializer.Meta):
-        fields = FootballClubRepresentationSerializer.Meta.fields + ('website', 'team_statistics')
+        fields = FootballClubRepresentationSerializer.Meta.fields + ('website', 'logo')
+
 
 class MatchSeparateSerializer(serializers.ModelSerializer):
     def validate_final_score(self, value):
@@ -123,6 +124,7 @@ class MatchSeparateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match
         fields = '__all__'
+
 
 class MatchSerializer(serializers.ModelSerializer):
 
@@ -185,6 +187,34 @@ class AgentSerializer(serializers.Serializer):  # experimental
     nationality = serializers.CharField(max_length=50)
     additional_data = serializers.CharField(max_length=500)
     contract_terms = serializers.CharField(max_length=250)
+    photo = serializers.ImageField()
+
+    def create(self, validated_data):
+        return Agent.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.age = validated_data.get('age', instance.age)
+        instance.nationality = validated_data.get('nationality', instance.nationality)
+        instance.additional_data = validated_data.get('additional_data', instance.additional_data)
+        instance.contract_terms = validated_data.get('contract_terms', instance.contract_terms)
+        instance.photo = validated_data.get('photo', instance.photo)
+        instance.save()
+        return instance
+
+class AgentWithoutPhotoSerializer(serializers.Serializer):  # experimental
+    def validate_age(self, value):
+        if value < 16:
+            raise serializers.ValidationError('Inappropriate age value')
+        return value
+
+    first_name = serializers.CharField(max_length=50)
+    last_name = serializers.CharField(max_length=50)
+    age = serializers.IntegerField()
+    nationality = serializers.CharField(max_length=50)
+    additional_data = serializers.CharField(max_length=500)
+    contract_terms = serializers.CharField(max_length=250)
 
     def create(self, validated_data):
         return Agent.objects.create(**validated_data)
@@ -198,7 +228,6 @@ class AgentSerializer(serializers.Serializer):  # experimental
         instance.contract_terms = validated_data.get('contract_terms', instance.contract_terms)
         instance.save()
         return instance
-
 
 class PlayerMatchesSerializer(serializers.ModelSerializer):
     statistics = PlayerStatisticsSerializer()
@@ -276,7 +305,7 @@ class PlayerFullSerializer(serializers.Serializer):
     football_club = FootballClubRepresentationSerializer()
     contract = ContractSerializer()
     statistics = PlayerStatisticsSerializer()
-    agent = AgentSerializer()
+    agent = AgentWithoutPhotoSerializer()
 
     def create(self, validated_data):
         stadium_data = validated_data['football_club'].pop('stadium')
@@ -377,7 +406,7 @@ class CoachFullSerializer(CoachSerializer):
     contract = ContractSerializer()
 
     class Meta(CoachSerializer.Meta):
-        fields = CoachSerializer.Meta.fields + ('website', 'team_tactics', 'contract',)
+        fields = CoachSerializer.Meta.fields + ('website', 'team_tactics', 'contract', 'photo')
 
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get('first_name', instance.first_name)
@@ -387,5 +416,6 @@ class CoachFullSerializer(CoachSerializer):
         instance.post = validated_data.get('post', instance.post)
         instance.website = validated_data.get('website', instance.website)
         instance.team_tactics = validated_data.get('team_tactics', instance.team_tactics)
+        instance.photo = validated_data.get('photo', instance.photo)
         instance.save()
         return instance

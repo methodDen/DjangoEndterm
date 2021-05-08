@@ -1,0 +1,8 @@
+WARNING -- 2021-05-08 16:35:34,835: Stadium is deleted, Stadium object (None)
+INFO -- 2021-05-08 16:38:27,370: Stadium is created: Stadium object (13)
+INFO -- 2021-05-08 16:45:23,841: Stadium is created: Альянц Арена
+INFO -- 2021-05-09 00:16:10,248: Coach is updated: Оле Гуннар Сульшер
+WARNING -- 2021-05-09 00:16:37,401: Coach is deleted, Оле Гуннар Сульшер
+INFO -- 2021-05-09 00:20:23,321: Agent is created: Эорже Эндеш
+INFO -- 2021-05-09 00:22:51,157: Agent is updated: Жорже Мендеш
+WARNING -- 2021-05-09 00:23:02,550: Agent is deleted, Жорже Мендеш

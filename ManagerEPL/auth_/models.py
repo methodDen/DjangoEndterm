@@ -3,6 +3,8 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.base_user import BaseUserManager
+from utils.validators import validate_size, validate_extension
+
 
 # Create your models here.
 
@@ -35,6 +37,7 @@ class MainUserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
 
+
 class MainUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
@@ -42,7 +45,8 @@ class MainUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)
     is_staff = models.BooleanField(_('is_staff'), default=False)
-
+    photo = models.ImageField(upload_to='user_photos', validators=[validate_size, validate_extension], null=True,
+                              blank=True, verbose_name='Фото')
 
     objects = MainUserManager()
 
@@ -52,3 +56,14 @@ class MainUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
+
+
+class Profile(models.Model):
+    bio = models.TextField(max_length=500, blank=True)
+    location = models.CharField(max_length=30, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
+    user = models.OneToOneField(MainUser, on_delete=models.CASCADE)  # To get access through Person.profile
+
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'

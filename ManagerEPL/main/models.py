@@ -1,5 +1,6 @@
 from django.db import models
 from rest_framework import serializers
+from utils.validators import validate_size, validate_extension
 
 
 # Create your models here.
@@ -20,6 +21,8 @@ class Stadium(models.Model):
         verbose_name = 'Стадион'
         verbose_name_plural = 'Стадионы'
 
+    def __str__(self):
+        return self.name
 
 def validate_matches_played(value):
     if not (1 <= value <= 38):
@@ -59,6 +62,8 @@ class PlayerStatistics(Statistics):
         verbose_name = 'Статистика игрока'
         verbose_name_plural = 'Статистика игроков'
 
+    def __str__(self):
+        return f'Player Statistics {self.id}'
 
 def place_range_validation(value):
     if value > 20 or value < 1:
@@ -98,6 +103,8 @@ class TeamStatistics(Statistics):
         verbose_name = 'Статистика клуба'
         verbose_name_plural = 'Статистика клубов'
 
+    def __str__(self):
+        return f'Team Statistics {self.id}'
 
 class FootballClubManager(models.Manager):
     def get_related(self):
@@ -108,11 +115,13 @@ class FootballClubManager(models.Manager):
 
 
 class FootballClub(models.Model):
-    title = models.CharField(max_length=100, verbose_name='Название')
-    website = models.CharField(max_length=50, verbose_name='Веб сайт')
+    title = models.CharField(max_length=100, verbose_name='Название', blank=True, null=True)
+    website = models.CharField(max_length=50, verbose_name='Веб сайт', blank=True, null=True)
     statistics = models.OneToOneField(TeamStatistics, on_delete=models.CASCADE, verbose_name='Статистика команды',
-                                      name='team_statistics')
-    stadium = models.OneToOneField(Stadium, on_delete=models.PROTECT, verbose_name='Стадион')
+                                      name='team_statistics', blank=True, null=True)
+    stadium = models.OneToOneField(Stadium, on_delete=models.PROTECT, verbose_name='Стадион', blank=True, null=True)
+    logo = models.ImageField(upload_to='football_club_photos', validators=[validate_size, validate_extension],
+                             null=True, blank=True, verbose_name='Эмблема')
 
     objects = FootballClubManager()
 
@@ -120,6 +129,8 @@ class FootballClub(models.Model):
         verbose_name = 'Футбольный клуб'
         verbose_name_plural = 'Футбольные клубы'
 
+    def __str__(self):
+        return self.title if self.title else f'Unnamed football club {self.id}'
 
 class MatchManager(models.Manager):
 
@@ -160,6 +171,8 @@ class Match(models.Model):
         verbose_name = 'Матч'
         verbose_name_plural = 'Матчи'
 
+    def __str__(self):
+        return f'{self.football_club.title} -- {self.opponent}'
 
 def salary_range_validation(value):
     if value < 500:
@@ -177,6 +190,8 @@ class Contract(models.Model):
         verbose_name = 'Контракт'
         verbose_name_plural = 'Контракты'
 
+    def __str__(self):
+        return f'Contract {self.id}'
 
 def age_range_validation(value):
     if value < 16:
@@ -184,10 +199,10 @@ def age_range_validation(value):
 
 
 class Person(models.Model):
-    first_name = models.CharField(max_length=50, verbose_name='Имя')
-    last_name = models.CharField(max_length=50, verbose_name='Фамилия')
-    age = models.IntegerField(verbose_name='Возраст', validators=[age_range_validation])
-    nationality = models.CharField(max_length=50, verbose_name='Национальность')
+    first_name = models.CharField(max_length=50, verbose_name='Имя', blank=True, null=True)
+    last_name = models.CharField(max_length=50, verbose_name='Фамилия', blank=True, null=True)
+    age = models.IntegerField(verbose_name='Возраст', validators=[age_range_validation], blank=True, null=True)
+    nationality = models.CharField(max_length=50, verbose_name='Национальность', blank=True, null=True)
     additional_data = models.TextField(max_length=500, verbose_name='Дополнительные сведения', blank=True, null=True)
 
     class Meta:
@@ -204,12 +219,18 @@ class AgentManager(models.Manager):  # reverse
 
 class Agent(Person):
     contract_terms = models.TextField(max_length=250, verbose_name='Условия контракта')
+    photo = models.ImageField(upload_to='agent_photos', validators=[validate_size, validate_extension], null=True,
+                              blank=True, verbose_name='Фото')
+
+
     objects = AgentManager()
 
     class Meta:
         verbose_name = 'Агент'
         verbose_name_plural = 'Агенты'
 
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}' if (self.first_name and self.last_name) else f'Unnamed agent {self.id}'
 
 class PlayerManager(models.Manager):
 
@@ -254,17 +275,18 @@ def weight_range_validation(value):
 
 
 class Player(Person):
-    position = models.CharField(max_length=50, verbose_name='Амплуа')
+    position = models.CharField(max_length=50, verbose_name='Амплуа', blank=True, null=True)
     height = models.IntegerField(verbose_name='Рост', blank=True, null=True, validators=[height_range_validation])
     weight = models.IntegerField(verbose_name='Вес', blank=True, null=True, validators=[weight_range_validation])
-    shirt_number = models.IntegerField(verbose_name='Номер', validators=[shirt_number_range_validation])
+    shirt_number = models.IntegerField(verbose_name='Номер', validators=[shirt_number_range_validation], blank=True, null=True)
     website = models.CharField(max_length=50, verbose_name='Веб сайт', blank=True, null=True)
-    is_foreign = models.BooleanField(verbose_name='Легионер')
-    is_local = models.BooleanField(verbose_name='Воспитанник клуба')
+    is_foreign = models.BooleanField(verbose_name='Легионер', blank=True, null=True)
+    is_local = models.BooleanField(verbose_name='Воспитанник клуба', blank=True, null=True)
+
     football_club = models.ForeignKey(FootballClub, on_delete=models.CASCADE, related_name='players',
-                                      verbose_name='Футбольный клуб')
-    contract = models.OneToOneField(Contract, on_delete=models.CASCADE, verbose_name='Контракт')
-    statistics = models.OneToOneField(PlayerStatistics, on_delete=models.CASCADE, verbose_name='Статистика игрока')
+                                      verbose_name='Футбольный клуб', blank=True, null=True)
+    contract = models.OneToOneField(Contract, on_delete=models.CASCADE, verbose_name='Контракт', blank=True, null=True)
+    statistics = models.OneToOneField(PlayerStatistics, on_delete=models.CASCADE, verbose_name='Статистика игрока', blank=True, null=True)
     agent = models.ForeignKey(Agent, on_delete=models.PROTECT, verbose_name='Агент', blank=True, null=True)
 
     objects = PlayerManager()
@@ -272,6 +294,9 @@ class Player(Person):
     class Meta:
         verbose_name = 'Игрок'
         verbose_name_plural = 'Игроки'
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}' if (self.first_name and self.last_name) else f'Unnamed player {self.id}'
 
 
 class CoachManager(models.Manager):
@@ -296,11 +321,17 @@ class Coach(Person):
     website = models.CharField(max_length=50, verbose_name='Веб сайт', blank=True, null=True)
     team_tactics = models.CharField(max_length=50, verbose_name='Тактика', blank=True, null=True,
                                     validators=[team_tactics_validation])
+    photo = models.ImageField(upload_to='coach_photos', validators=[validate_size, validate_extension], null=True,
+                              blank=True, verbose_name='Фото')
     football_club = models.ForeignKey(FootballClub, on_delete=models.CASCADE, related_name='coaches',
                                       verbose_name='Футбольный клуб')
     contract = models.OneToOneField(Contract, on_delete=models.CASCADE, verbose_name='Контракт')
+
     objects = CoachManager()
 
     class Meta:
         verbose_name = 'Тренер'
         verbose_name_plural = 'Тренера'
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}' if (self.first_name and self.last_name) else f'Unnamed coach {self.id}'

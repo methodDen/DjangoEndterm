@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+import logging
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -13,8 +14,9 @@ from main.serializers import PlayerMatchesSerializer, PlayerRepresentationSerial
     MatchFullSerializer, \
     ContractSerializer, ContractFullSerializer, AgentSerializer, CoachSerializer, CoachFullSerializer
 
-
 # Create your views here.
+
+logger = logging.getLogger(__name__)
 
 
 class StadiumViewSet(viewsets.ModelViewSet):
@@ -34,6 +36,18 @@ class StadiumViewSet(viewsets.ModelViewSet):
 
         return [permission() for permission in permission_classes]
 
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Stadium is created: {serializer.instance}')
+
+    def perform_update(self, serializer):
+        serializer.save()
+        logger.info(f'Stadium is updated: {serializer.instance}')
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        logger.warning(f'Stadium is deleted, {instance}')
+
 
 class PlayerStatisticsViewSet(viewsets.ModelViewSet):
     queryset = PlayerStatistics.objects.all()
@@ -51,6 +65,18 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
             permission_classes = (IsAuthenticated,)
 
         return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Player Statistics is created: {serializer.instance}')
+
+    def perform_update(self, serializer):
+        serializer.save()
+        logger.info(f'Player Statistics is updated: {serializer.instance}')
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        logger.warning(f'Player Statistics is deleted, {instance}')
 
     @action(methods=['GET'], detail=False, url_path='top-scorers')
     def get_top_scorer_stats(self, request):
@@ -82,6 +108,18 @@ class TeamStatisticsViewSet(viewsets.ModelViewSet):
 
         return [permission() for permission in permission_classes]
 
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Team Statistics is created: {serializer.instance}')
+
+    def perform_update(self, serializer):
+        serializer.save()
+        logger.info(f'Team Statistics is updated: {serializer.instance}')
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        logger.warning(f'Team Statistics is deleted, {instance}')
+
 
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = Player.objects.all()
@@ -101,6 +139,18 @@ class PlayerViewSet(viewsets.ModelViewSet):
             permission_classes = (IsAuthenticated,)
 
         return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Player is created: {serializer.instance}')
+
+    def perform_update(self, serializer):
+        serializer.save()
+        logger.info(f'Player is updated: {serializer.instance}')
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        logger.warning(f'Player is deleted, {instance}')
 
     @action(methods=['GET'], detail=True, url_path='stats')
     def player_matches_statistics(self, request, pk):
@@ -158,6 +208,12 @@ class FootballClubViewSet(viewsets.ModelViewSet):  # Стоит ли созда�
 
         return [permission() for permission in permission_classes]
 
+
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        logger.warning(f'Football Club is deleted, {instance}')
+
     @action(methods=['GET'], detail=True, url_path='place')
     def get_football_club_by_place(self, request, pk):
         queryset = FootballClub.objects.get_by_place_with_relation(place=pk)
@@ -182,6 +238,14 @@ class MatchViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     queryset = Match.objects.all()
+
+    def perform_update(self, serializer):
+        serializer.save()
+        logger.info(f'Match is updated: {serializer.instance}')
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        logger.warning(f'Match is deleted, {instance}')
 
     @action(methods=['GET'], detail=True, url_path='opponent')
     def get_match_by_opponent(self, request, pk):
@@ -213,6 +277,18 @@ class ContractViewSet(viewsets.ModelViewSet):
 
         return [permission() for permission in permission_classes]
 
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Contract is created: {serializer.instance}')
+
+    def perform_update(self, serializer):
+        serializer.save()
+        logger.info(f'Contract is updated: {serializer.instance}')
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        logger.warning(f'Contract is deleted, {instance}')
+
 
 class AgentViewSet(viewsets.ModelViewSet):
     queryset = Agent.objects.all()
@@ -220,6 +296,18 @@ class AgentViewSet(viewsets.ModelViewSet):
     serializer_class = AgentSerializer
 
     permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Agent is created: {serializer.instance}')
+
+    def perform_update(self, serializer):
+        serializer.save()
+        logger.info(f'Agent is updated: {serializer.instance}')
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        logger.warning(f'Agent is deleted, {instance}')
 
     @action(methods=['GET'], detail=False, url_path='experienced')
     def get_experienced_agents(self, request):
@@ -244,6 +332,14 @@ class CoachViewSet(viewsets.ModelViewSet):
             permission_classes = (IsAuthenticated,)
 
         return [permission() for permission in permission_classes]
+
+    def perform_update(self, serializer):
+        serializer.save()
+        logger.info(f'Coach is updated: {serializer.instance}')
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        logger.warning(f'Coach is deleted, {instance}')
 
     @action(methods=['GET'], detail=True, url_path='football_club')
     def get_coaches_by_football_club(self, request, pk):
