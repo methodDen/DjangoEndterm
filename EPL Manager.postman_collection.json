@@ -1,0 +1,1012 @@
+{
+	"info": {
+		"_postman_id": "fad1f261-e7fa-4104-9c4c-898932ffa90a",
+		"name": "EPL Manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)\r",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"qwerty\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/api-token-auth/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"api-token-auth",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/auth/users/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"bio\": \"апвпвапва\",\r\n    \"location\": \"ываываыаыва\",\r\n    \"user\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/profiles/1/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"profiles",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Coach",
+			"item": [
+				{
+					"name": "Coach by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Оле Гунн\",\r\n    \"last_name\": \"Сульше\",\r\n    \"age\": 49,\r\n    \"nationality\": \"Норвеги\",\r\n    \"football_club\": {\r\n        \"title\": \"United\"\r\n    },\r\n    \"post\": \"Главный трене\",\r\n    \"website\": null,\r\n    \"team_tactics\": \"Attack\",\r\n    \"contract\": {\r\n        \"signing_date\": \"2021-04-04\",\r\n        \"expiration_date\": \"2021-04-29\",\r\n        \"salary\": 100000\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/coaches/1/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"coaches",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Coach List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/coaches/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"coaches",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Coach by Football Club",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/coaches/14/football_club/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"coaches",
+								"14",
+								"football_club",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Agent",
+			"item": [
+				{
+					"name": "Agent by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Мино\",\r\n    \"last_name\": \"Райола\",\r\n    \"age\": 57,\r\n    \"nationality\": \"Италия\",\r\n    \"additional_data\": \"Агент Экстра-класса\",\r\n    \"contract_terms\": \"30% комиссионных с суммы каждого трансфера\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/agents/1/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"agents",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agent List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/agents/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"agents",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agent List experienced",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/agents/experienced/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"agents",
+								"experienced",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contract",
+			"item": [
+				{
+					"name": "Contract by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"signing_date\": \"2019-07-31\",\r\n    \"expiration_date\": \"2025-06-30\",\r\n    \"salary\": 250,\r\n    \"previous_club\": null,\r\n    \"additional_data\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/contracts/2/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"contracts",
+								"2",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Contract List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/contracts/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"contracts",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Match",
+			"item": [
+				{
+					"name": "Match by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/matches/1/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"matches",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matches List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/matches/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"matches",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matches List by opponent",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/matches/Tottenham/opponent/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"matches",
+								"Tottenham",
+								"opponent",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matches List by weather",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"final_score\": \"8-2\",\r\n    \"football_club\": {\r\n        \"title\": \"United\"\r\n    },\r\n    \"opponent\": \"Tottenham\",\r\n    \"date\": \"2021-04-29\",\r\n    \"weather\": \"Rainy\",\r\n    \"is_played\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/matches/Sunny/weather/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"matches",
+								"Sunny",
+								"weather",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Football Club",
+			"item": [
+				{
+					"name": "Football Club by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/football_clubs/6/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"football_clubs",
+								"6",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Football Club List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/football_clubs/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"football_clubs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Football Club by place",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Борусия\",\r\n    \"stadium\": {\r\n        \"name\": \"Сигнал Идунец Парк\",\r\n        \"capacity\": 85320,\r\n        \"address\": \"Гельзенкирхен, Германия\"\r\n    },\r\n    \"team_statistics\": {\r\n        \"matches_played\": 35,\r\n        \"wins\": 20,\r\n        \"draws\": 14,\r\n        \"loses\": 1,\r\n        \"goals_scored\": 650,\r\n        \"goals_conceded\": 34000,\r\n        \"yellow_cards\": 180,\r\n        \"red_cards\": 30,\r\n        \"points\": 670009,\r\n        \"place\": 20\r\n    },\r\n    \"website\": \"borussi.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/football_clubs/1/place/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"football_clubs",
+								"1",
+								"place",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Player",
+			"item": [
+				{
+					"name": "Player by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Скотт\",\r\n    \"last_name\": \"Мактоминей\",\r\n    \"age\": 24,\r\n    \"nationality\": \"Шотландия\",\r\n    \"additional_data\": \"Has English blood\",\r\n    \"position\": \"Centre midfielder\",\r\n    \"height\": 190,\r\n    \"weight\": 79,\r\n    \"shirt_number\": 40,\r\n    \"website\": \"scotty\",\r\n    \"is_foreign\": false,\r\n    \"is_local\": false,\r\n    \"football_club\": {\r\n        \"title\": \"Манчестернайтед\",\r\n        \"stadium\": {\r\n            \"name\": \"Олд Траффорд\",\r\n            \"capacity\": 75500,\r\n            \"address\": \"Манчестер, Великобритания\"\r\n        },\r\n        \"team_statistics\": {\r\n            \"matches_played\": 33,\r\n            \"wins\": 19,\r\n            \"draws\": 10,\r\n            \"loses\": 4,\r\n            \"goals_scored\": 64,\r\n            \"goals_conceded\": 35,\r\n            \"yellow_cards\": 10,\r\n            \"red_cards\": 1,\r\n            \"points\": 67,\r\n            \"place\": 1\r\n        }\r\n    },\r\n    \"contract\": {\r\n        \"signing_date\": \"2019-07-31\",\r\n        \"expiration_date\": \"2023-06-30\",\r\n        \"salary\": 20000\r\n    },\r\n    \"statistics\": {\r\n        \"matches_played\": 1,\r\n        \"goals_scored\": 1,\r\n        \"assists\": 1,\r\n        \"yellow_cards\": 1,\r\n        \"red_cards\": 1,\r\n        \"is_injured\": false\r\n    },\r\n    \"agent\": {\r\n        \"first_name\": \"Roc\",\r\n        \"last_name\": \"Nation\",\r\n        \"age\": 51,\r\n        \"nationality\": \"США\",\r\n        \"additional_data\": \"Агентство Jay Z\",\r\n        \"contract_terms\": \"-kekek\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/players/13/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"players",
+								"13",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Players List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Маркус\",\r\n    \"last_name\": \"Рэшфорд\",\r\n    \"age\": 23,\r\n    \"nationality\": \"Великобритания\",\r\n    \"additional_data\": \"Член ордена Британской империи\",\r\n    \"position\": \"Left winger\",\r\n    \"height\": 180,\r\n    \"weight\": 77,\r\n    \"shirt_number\": 10,\r\n    \"website\": \"@marcusrashford\",\r\n    \"is_foreign\": false,\r\n    \"is_from_academy\": true,\r\n    \"football_club\": {\r\n        \"title\": \"Манчестер Юнайтед\",\r\n        \"stadium\": {\r\n            \"name\": \"Олд Траффорд\",\r\n            \"capacity\": 75000,\r\n            \"address\": \"Манчестер, Великобритания\"\r\n        },\r\n        \"team_statistics\": {\r\n            \"matches_played\": 33,\r\n            \"wins\": 19,\r\n            \"draws\": 10,\r\n            \"loses\": 4,\r\n            \"goals_scored\": 64,\r\n            \"goals_conceded\": 35,\r\n            \"yellow_cards\": 10,\r\n            \"red_cards\": 1,\r\n            \"points\": 67,\r\n            \"place\": 2\r\n        }\r\n    },\r\n    \"contract\": {\r\n        \"signing_date\": \"2019-07-31\",\r\n        \"expiration_date\": \"2023-06-30\",\r\n        \"salary\": 200000\r\n    },\r\n    \"statistics\": {\r\n        \"matches_played\": 33,\r\n        \"goals_scored\": 10,\r\n        \"assists\": 10,\r\n        \"yellow_cards\": 4,\r\n        \"red_cards\": 0,\r\n        \"is_injured\": false\r\n    },\r\n    \"agent\": {\r\n        \"first_name\": \"Roc\",\r\n        \"last_name\": \"Nation\",\r\n        \"age\": 51,\r\n        \"nationality\": \"США\",\r\n        \"additional_data\": \"Агентство Jay Z\",\r\n        \"contract_terms\": \"-\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/players/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"players",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Player by Id with Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/players/12/stats/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"players",
+								"12",
+								"stats",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Player by Id with Contract",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/players/21/contract",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"players",
+								"21",
+								"contract"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Player List local",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/players/local/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"players",
+								"local",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Player List foreign",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/players/foreign/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"players",
+								"foreign",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Player List injured",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/players/injured/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"players",
+								"injured",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Player List healthy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/players/healthy/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"players",
+								"healthy",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Team Statistics",
+			"item": [
+				{
+					"name": "Team Statistics by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/team-stats/1/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"team-stats",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Team Statistics List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/team-stats/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"team-stats",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Player Statistics",
+			"item": [
+				{
+					"name": "Player Statistics by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/player-stats/3/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"player-stats",
+								"3",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Player Statistics List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"matches_played\": 23,\r\n    \"goals_scored\": 5,\r\n    \"assists\": 10,\r\n    \"yellow_cards\": 2,\r\n    \"red_cards\": 0,\r\n    \"is_injured\": true,\r\n    \"minutes_played\": null,\r\n    \"injury_type\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/player-stats/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"player-stats",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Player Statistics List top-scorers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/player-stats/top-scorers/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"player-stats",
+								"top-scorers",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Player Statistics List top-assistants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/player-stats/top-assistants/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"player-stats",
+								"top-assistants",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Stadium",
+			"item": [
+				{
+					"name": "Stadium by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/stadiums/1/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"stadiums",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stadium List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/stadiums/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"stadiums",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

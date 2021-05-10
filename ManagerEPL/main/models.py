@@ -24,6 +24,7 @@ class Stadium(models.Model):
     def __str__(self):
         return self.name
 
+
 def validate_matches_played(value):
     if not (1 <= value <= 38):
         raise serializers.ValidationError('Invalid number of matches value')
@@ -31,8 +32,8 @@ def validate_matches_played(value):
 
 class Statistics(models.Model):
     matches_played = models.IntegerField(verbose_name='Сыграно матчей', validators=[validate_matches_played])
-    yellow_cards = models.IntegerField(verbose_name='Желтые карточки')
-    red_cards = models.IntegerField(verbose_name='Красные карточки')
+    yellow_cards = models.IntegerField(verbose_name='Желтые карточки', blank=True, null=True)
+    red_cards = models.IntegerField(verbose_name='Красные карточки', blank=True, null=True)
     goals_scored = models.IntegerField(verbose_name='Забитые голы')
 
     class Meta:
@@ -51,7 +52,7 @@ class PlayerStatisticsManager(models.Manager):  # correct
 
 
 class PlayerStatistics(Statistics):
-    assists = models.IntegerField(verbose_name='Голевые передачи')
+    assists = models.IntegerField(verbose_name='Голевые передачи', blank=True, null=True)
     minutes_played = models.IntegerField(verbose_name='Количество сыгранных минут', blank=True, null=True)
     is_injured = models.BooleanField(verbose_name='Травмирован')
     injury_type = models.CharField(max_length=100, verbose_name='Тип трамвы', blank=True, null=True)
@@ -64,6 +65,7 @@ class PlayerStatistics(Statistics):
 
     def __str__(self):
         return f'Player Statistics {self.id}'
+
 
 def place_range_validation(value):
     if value > 20 or value < 1:
@@ -91,10 +93,10 @@ class TeamStatisticsManager(models.Manager):
 
 
 class TeamStatistics(Statistics):
-    wins = models.IntegerField(verbose_name='Победы', validators=[validate_wins])
-    draws = models.IntegerField(verbose_name='Ничьи', validators=[validate_draws])
-    loses = models.IntegerField(verbose_name='Поражения', validators=[validate_loses])
-    goals_conceded = models.IntegerField(verbose_name='Пропущенные голы')
+    wins = models.IntegerField(verbose_name='Победы', validators=[validate_wins], blank=True, null=True)
+    draws = models.IntegerField(verbose_name='Ничьи', validators=[validate_draws], blank=True, null=True)
+    loses = models.IntegerField(verbose_name='Поражения', validators=[validate_loses], blank=True, null=True)
+    goals_conceded = models.IntegerField(verbose_name='Пропущенные голы', blank=True, null=True)
     points = models.IntegerField(verbose_name='Количество очков')
     place = models.IntegerField(verbose_name='Место в таблице', validators=[place_range_validation, ])
     objects = TeamStatisticsManager()
@@ -105,6 +107,7 @@ class TeamStatistics(Statistics):
 
     def __str__(self):
         return f'Team Statistics {self.id}'
+
 
 class FootballClubManager(models.Manager):
     def get_related(self):
@@ -131,6 +134,7 @@ class FootballClub(models.Model):
 
     def __str__(self):
         return self.title if self.title else f'Unnamed football club {self.id}'
+
 
 class MatchManager(models.Manager):
 
@@ -163,7 +167,7 @@ class Match(models.Model):
     opponent = models.CharField(max_length=100, verbose_name='Соперник')
     is_played = models.BooleanField(verbose_name='Завершен')
     football_club = models.ForeignKey(FootballClub, on_delete=models.CASCADE, related_name='matches',
-                                      verbose_name='Футбольный клуб')
+                                      verbose_name='Футбольный клуб', blank=True, null=True)
 
     objects = MatchManager()
 
@@ -173,6 +177,7 @@ class Match(models.Model):
 
     def __str__(self):
         return f'{self.football_club.title} -- {self.opponent}'
+
 
 def salary_range_validation(value):
     if value < 500:
@@ -192,6 +197,7 @@ class Contract(models.Model):
 
     def __str__(self):
         return f'Contract {self.id}'
+
 
 def age_range_validation(value):
     if value < 16:
@@ -222,7 +228,6 @@ class Agent(Person):
     photo = models.ImageField(upload_to='agent_photos', validators=[validate_size, validate_extension], null=True,
                               blank=True, verbose_name='Фото')
 
-
     objects = AgentManager()
 
     class Meta:
@@ -230,7 +235,9 @@ class Agent(Person):
         verbose_name_plural = 'Агенты'
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}' if (self.first_name and self.last_name) else f'Unnamed agent {self.id}'
+        return f'{self.first_name} {self.last_name}' if (
+                    self.first_name and self.last_name) else f'Unnamed agent {self.id}'
+
 
 class PlayerManager(models.Manager):
 
@@ -278,7 +285,8 @@ class Player(Person):
     position = models.CharField(max_length=50, verbose_name='Амплуа', blank=True, null=True)
     height = models.IntegerField(verbose_name='Рост', blank=True, null=True, validators=[height_range_validation])
     weight = models.IntegerField(verbose_name='Вес', blank=True, null=True, validators=[weight_range_validation])
-    shirt_number = models.IntegerField(verbose_name='Номер', validators=[shirt_number_range_validation], blank=True, null=True)
+    shirt_number = models.IntegerField(verbose_name='Номер', validators=[shirt_number_range_validation], blank=True,
+                                       null=True)
     website = models.CharField(max_length=50, verbose_name='Веб сайт', blank=True, null=True)
     is_foreign = models.BooleanField(verbose_name='Легионер', blank=True, null=True)
     is_local = models.BooleanField(verbose_name='Воспитанник клуба', blank=True, null=True)
@@ -286,7 +294,8 @@ class Player(Person):
     football_club = models.ForeignKey(FootballClub, on_delete=models.CASCADE, related_name='players',
                                       verbose_name='Футбольный клуб', blank=True, null=True)
     contract = models.OneToOneField(Contract, on_delete=models.CASCADE, verbose_name='Контракт', blank=True, null=True)
-    statistics = models.OneToOneField(PlayerStatistics, on_delete=models.CASCADE, verbose_name='Статистика игрока', blank=True, null=True)
+    statistics = models.OneToOneField(PlayerStatistics, on_delete=models.CASCADE, verbose_name='Статистика игрока',
+                                      blank=True, null=True)
     agent = models.ForeignKey(Agent, on_delete=models.PROTECT, verbose_name='Агент', blank=True, null=True)
 
     objects = PlayerManager()
@@ -296,7 +305,8 @@ class Player(Person):
         verbose_name_plural = 'Игроки'
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}' if (self.first_name and self.last_name) else f'Unnamed player {self.id}'
+        return f'{self.first_name} {self.last_name}' if (
+                    self.first_name and self.last_name) else f'Unnamed player {self.id}'
 
 
 class CoachManager(models.Manager):
@@ -324,8 +334,8 @@ class Coach(Person):
     photo = models.ImageField(upload_to='coach_photos', validators=[validate_size, validate_extension], null=True,
                               blank=True, verbose_name='Фото')
     football_club = models.ForeignKey(FootballClub, on_delete=models.CASCADE, related_name='coaches',
-                                      verbose_name='Футбольный клуб')
-    contract = models.OneToOneField(Contract, on_delete=models.CASCADE, verbose_name='Контракт')
+                                      verbose_name='Футбольный клуб', blank=True, null=True)
+    contract = models.OneToOneField(Contract, on_delete=models.CASCADE, verbose_name='Контракт', blank=True, null=True)
 
     objects = CoachManager()
 
@@ -334,4 +344,5 @@ class Coach(Person):
         verbose_name_plural = 'Тренера'
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}' if (self.first_name and self.last_name) else f'Unnamed coach {self.id}'
+        return f'{self.first_name} {self.last_name}' if (
+                    self.first_name and self.last_name) else f'Unnamed coach {self.id}'
